@@ -22,7 +22,20 @@ const UserSchima = new mongoose.Schema({
         type:String,
 
     },
-    loginHistory
+    loginHistory:[
+        {
+        logintime:{
+        type:Date,
+        default:Date.now
+        },
+        ipAddress:{
+            type:String,
+        },
+        deviceDetails:{
+            type:String,
+        }
+    }
+    ]
 },{timestamps:true})
 
 const User = mongoose.model ('User',UserSchima)
