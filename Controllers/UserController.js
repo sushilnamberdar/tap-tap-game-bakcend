@@ -9,10 +9,16 @@ const Register = async (req, res) => {
     const { username, email, password } = req.body;
 
     try {
-        const existingUser = await User.findOne({ $or: [{ email }, { username }] });
-        if (existingUser) {
-            return res.status(400).json({ message: 'Email or username already in use' });
-        }
+
+            const existingemail = await User.findOne({email});
+            if(existingemail) {
+                return res.status(400).json({message:'Email Already in Use '});
+            }
+
+            const existingusername = await User.findOne({username});
+            if(existingusername){
+                return res.status(400).json({message:'Username Already in Use'})
+            }
 
         const hashedPassword = await bcrypt.hash(password, salt_rounds);
         const newUser = new User({
