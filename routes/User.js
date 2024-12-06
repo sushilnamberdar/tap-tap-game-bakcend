@@ -9,6 +9,10 @@ const router = express.Router();
 
 router.post('/register',Register);
 router.post('/login',login);
+router.get('/', ((req,res)=> {
+    res.send('HII this side sushil namberdar')
+
+}))
 
 
 module.exports = router;

@@ -1,9 +1,9 @@
-const bcrpt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const generateToken = require('../utils/token');
 
 
-const salt_rounds = parentInt(process.env.BCRYPT_SALT_ROUNDS) || 10;
+const salt_rounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 10;
 
 const Register = async (req, res) => {
     const { username, email, password } = req.body;
@@ -11,10 +11,10 @@ const Register = async (req, res) => {
     try {
         const existingUser = await User.findOne({ $or: [{ email }, { username }] });
         if (existingUser) {
-            return res.send(400).json({ message: 'Email or username already in use' });
+            return res.status(400).json({ message: 'Email or username already in use' });
         }
 
-        const hashedPassword = await bcrpt.hash(password, salt_rounds);
+        const hashedPassword = await bcrypt.hash(password, salt_rounds);
         const newUser = new User({
             username,
             email,
@@ -27,7 +27,8 @@ const Register = async (req, res) => {
         })
 
         await newUser.save();
-        return res.stauts(201).json({ message: 'User Register successfully' });
+
+        return res.status(201).json({ message: 'User Register successfully' });
 
     } catch (error) {
         console.error(error);
@@ -49,7 +50,7 @@ const login = async(req,res) => {
         }
 
         // update the login info if the password and email math 
-        user.activity.lastlogin = Date.now;
+        user.activity.lastlogin = Date.now();
         user.activity.lastlogindevice = req.headers['user-agent'];
         user.activity.loginHistory.push({
             logintime:Date.now(),
@@ -57,7 +58,7 @@ const login = async(req,res) => {
             deviceDetails:req.headers['user-agent']
         })
 
-        await user.sage();
+        await user.save();
         const token = generateToken({id:user._id,username:user.username,email:user.email});
 
         return res.status(200).json({
@@ -67,7 +68,7 @@ const login = async(req,res) => {
         });
     }catch (error){
         console.error(error);
-        return res.send(500).json({message:'Error Loggin in ',error});
+        return res.status(500).json({message:'Error Loggin in ',error});
     }
 }
 
