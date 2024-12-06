@@ -2,42 +2,44 @@ const mongoose = require('mongoose');
 const UserSchima = new mongoose.Schema({
     username: {
         type: String,
-        require: true,
+        required: true,
         unique: true
     },
     email: {
         type: String,
-        require: true,
+        required: true,
         unique: true
     },
-    password:{
-        type:String,
-        require:true
+    password: {
+        type: String,
+        required: true
     },
-    lastlogin:{
-        type:Date,
-        default:Date.now,
-    },
-    lastlogindevice:{
-        type:String,
+    activity: {
+        lastlogin: {
+            type: Date,
+            default: Date.now,
+        },
+        lastlogindevice: {
+            type: String,
 
-    },
-    loginHistory:[
-        {
-        logintime:{
-        type:Date,
-        default:Date.now
         },
-        ipAddress:{
-            type:String,
-        },
-        deviceDetails:{
-            type:String,
-        }
+        loginHistory: [
+            {
+                logintime: {
+                    type: Date,
+                    default: Date.now
+                },
+                ipAddress: {
+                    type: String,
+                },
+                deviceDetails: {
+                    type: String,
+                }
+            }
+        ]
     }
-    ]
-},{timestamps:true})
+}, { timestamps: true })
 
-const User = mongoose.model ('User',UserSchima)
+const User = mongoose.model('User', UserSchima)
 
 module.exports = User;
