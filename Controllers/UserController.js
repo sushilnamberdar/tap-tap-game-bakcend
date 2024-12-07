@@ -67,6 +67,13 @@ const login = async(req,res) => {
         await user.save();
         const token = generateToken({id:user._id,username:user.username,email:user.email});
 
+      await  res.cookie('userauthToken', token, {
+            path:'/',
+            maxAge: 3600000, // 1 hour in milliseconds
+            httpOnly: false,
+            secure:false,
+            sameSite:'lax'
+        });
         return res.status(200).json({
             message:'Login Successful',
             token,
